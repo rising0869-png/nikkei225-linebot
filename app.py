@@ -80,16 +80,17 @@ def webhook():
 def handle_message(event):
     user_text = event.message.text
 
-if user_text == "業種一覧":
-    reply_text = get_industries()
+    if user_text == "業種一覧":
+        reply_text = get_industries()
 
-else:
-    industry_result = search_industry(user_text)
-
-    if industry_result:
-        reply_text = industry_result
     else:
-        reply_text = search_stock(user_text)
+        industry_result = search_industry(user_text)
+
+        if industry_result:
+            reply_text = industry_result
+
+        else:
+            reply_text = search_stock(user_text)
 
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
