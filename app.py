@@ -80,6 +80,28 @@ def webhook():
 def handle_message(event):
     user_text = event.message.text
 
+    if user_text == "ヘルプ":
+【日経225検索BOT】
+
+■銘柄名検索
+例：
+トヨタ
+
+■銘柄コード検索
+例：
+7203
+
+■業種検索
+例：
+自動車
+
+■業種一覧表示
+業種一覧
+
+■ヘルプ表示
+ヘルプ
+"""
+
     if user_text == "業種一覧":
         reply_text = get_industries()
 
