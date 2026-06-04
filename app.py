@@ -20,6 +20,25 @@ def search_stock(keyword):
 
     return "見つかりませんでした"
 
+def get_industries():
+    industries = sorted(set(row["業種"] for row in rows))
+    return "\n".join(industries)
+
+
+def search_industry(industry):
+    result = []
+
+    for row in rows:
+        if row["業種"] == industry:
+            result.append(
+                f"{row['銘柄コード']} {row['銘柄名']}"
+            )
+
+    if result:
+        return "\n".join(result)
+
+    return None
+
 rows = sheet.get_all_records()
 from flask import Flask, request
 import os
@@ -35,8 +54,8 @@ from linebot.v3.webhooks import MessageEvent, TextMessageContent
 
 app = Flask(__name__)
 
-CHANNEL_SECRET="mCDUULpq/8U3UDXhFIXSWRMYBuvJD6XM+LFGqikNeHjDuMo+oRSrT2jLiDFKh0OpDcPv9Mjl9qIXc6jL47LhExEjWHxMBzGjg/n+6rJgBUoJCwV0twQYLUbk3/srwrbY0uvcgIXx7MLcn8hGxuOAJwdB04t89/1O/w1cDnyilFU="
-CHANNEL_ACCESS_TOKEN ="bfe03207ce7d9df623aafc4432d86fff"
+CHANNEL_SECRET = os.environ["CHANNEL_SECRET"]
+CHANNEL_ACCESS_TOKEN = os.environ["CHANNEL_ACCESS_TOKEN"]
 
 configuration = Configuration(
     access_token=CHANNEL_ACCESS_TOKEN
@@ -61,7 +80,16 @@ def webhook():
 def handle_message(event):
     user_text = event.message.text
 
-    reply_text = search_stock(user_text)
+    if user_text == "業種一覧":
+    reply_text = get_industries()
+
+else:
+    industry_result = search_industry(user_text)
+
+    if industry_result:
+        reply_text = industry_result
+    else:
+        reply_text = search_stock(user_text)
 
     with ApiClient(configuration) as api_client:
         line_bot_api = MessagingApi(api_client)
