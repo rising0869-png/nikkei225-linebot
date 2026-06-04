@@ -80,7 +80,7 @@ def webhook():
 def handle_message(event):
     user_text = event.message.text
 
-    if user_text == "業種一覧":
+if user_text == "業種一覧":
     reply_text = get_industries()
 
 else:
